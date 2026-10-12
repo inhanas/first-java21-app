@@ -1,0 +1,29 @@
+name: Build Java 21
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Microsoft Java 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: microsoft
+          java-version: '21'
+          cache: maven
+      - name: Build and test
+        run: mvn --batch-mode --no-transfer-progress clean verify
+      - name: Save executable JAR
+        uses: actions/upload-artifact@v4
+        with:
+          name: java21-app
+          path: target/app.jar
+          if-no-files-found: error
